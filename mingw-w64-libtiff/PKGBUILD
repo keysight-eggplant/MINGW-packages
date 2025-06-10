@@ -19,7 +19,7 @@ msys2_references=(
 )
 license=('spdx:MIT')
 depends=("${MINGW_PACKAGE_PREFIX}-cc-libs"
-         "${MINGW_PACKAGE_PREFIX}-jbigkit"
+         $([[ "${enable_nogpl}" != true ]] && echo "${MINGW_PACKAGE_PREFIX}-jbigkit")
          "${MINGW_PACKAGE_PREFIX}-lerc"
          "${MINGW_PACKAGE_PREFIX}-libjpeg-turbo"
          "${MINGW_PACKAGE_PREFIX}-libdeflate"
@@ -57,7 +57,7 @@ build() {
     --enable-static \
     --disable-shared \
     --enable-cxx \
-    --enable-jbig \
+    $([[ "${enable_nogpl}" != true ]] && echo --enable-jbig || echo --disable-jbig) \
     --enable-lerc \
     --enable-libdeflate \
     --enable-webp
@@ -74,7 +74,7 @@ build() {
     --disable-static \
     --enable-shared \
     --enable-cxx \
-    --enable-jbig \
+    $([[ "${enable_nogpl}" != true ]] && echo --enable-jbig || echo --disable-jbig) \
     --enable-lerc \
     --enable-libdeflate \
     --enable-webp
