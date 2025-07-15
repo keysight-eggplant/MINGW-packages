@@ -35,7 +35,7 @@ depends=($([[ "$_enable_gst" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-gst-pl
          "${MINGW_PACKAGE_PREFIX}-libtiff"
          "${MINGW_PACKAGE_PREFIX}-libwebp"
          "${MINGW_PACKAGE_PREFIX}-ogre3d"
-         "${MINGW_PACKAGE_PREFIX}-openblas"
+         $([[ "${no_openblas}" != true ]] && echo "${MINGW_PACKAGE_PREFIX}-openblas")
          "${MINGW_PACKAGE_PREFIX}-openjpeg2"
          "${MINGW_PACKAGE_PREFIX}-openexr"
          "${MINGW_PACKAGE_PREFIX}-protobuf"
@@ -70,7 +70,9 @@ source=(https://github.com/opencv/opencv/archive/${pkgver}/${_realname}-${pkgver
         '0021-requires-vtk.patch'
         '0104-rgbd-module-missing-include.patch'
         '0106-use-find-package-with-hdf5.patch'
-        '0200-qt69-build-fix.patch')
+        '0200-qt69-build-fix.patch'
+        '0107-adapt-to-cmake4.patch'
+        )
 sha256sums=('44c106d5bb47efec04e531fd93008b3fcd1d27138985c5baf4eafac0e1ec9e9d'
             '4197722b4c5ed42b476d42e29beb29a52b6b25c34ec7b4d589c3ae5145fee98e'
             '42e7622b8863ded52c21f1bb57de62dd0089e057002cee1dee7f3064e3fdaea2'
@@ -81,7 +83,9 @@ sha256sums=('44c106d5bb47efec04e531fd93008b3fcd1d27138985c5baf4eafac0e1ec9e9d'
             'f572f94eb3e438eb1e0700ee04b9c999cd3216b39ba04321148137cecf6bbcb5'
             'c6c92cf39dfe45b8fb41d80ac0de3cd304e8b695420b307fd4320a105d8fe9f4'
             '01db42dc6fec466433ebe701be4fa21d5cb439cc156b04d969290a98e18f7467'
-            '7ec93b30b5790803c566790fc39d3177fd5947c1e82144e0d90762e7122ad893')
+            '7ec93b30b5790803c566790fc39d3177fd5947c1e82144e0d90762e7122ad893'
+            '67dd56d105196695cb7553772b403f294b53c57b48f9acaf9e7ab3c8e43f7f88'
+            )
 
 # Helper macros to help make tasks easier #
 apply_patch_with_msg() {
@@ -120,13 +124,19 @@ prepare() {
   apply_patch_with_msg \
     0104-rgbd-module-missing-include.patch \
     0106-use-find-package-with-hdf5.patch
+  
+  cd "${srcdir}/${_realname}-${pkgver}"
+  apply_patch_with_msg \
+    0107-adapt-to-cmake4.patch
 }
 
 build() {
   mkdir -p "${srcdir}"/build-${MSYSTEM} && cd "${srcdir}"/build-${MSYSTEM}
 
   export OpenEXR_HOME=${MINGW_PREFIX}
-  export OpenBLAS_HOME=${MINGW_PREFIX}
+  if [[ "${no_openblas}" != true ]]; then
+    export OpenBLAS_HOME=${MINGW_PREFIX}
+  fi
 
   local -a _extra_config
   if check_option "debug" "n"; then
@@ -190,6 +200,7 @@ build() {
     -Dprotobuf_MODULE_COMPATIBLE=ON \
     -DENABLE_PRECOMPILED_HEADERS=OFF \
     -DCMAKE_CXX_STANDARD=17 \
+    $([[ "${no_openblas}" != true ]] && echo "-DWITH_LAPACK=ON" || echo "-DWITH_LAPACK=OFF") \
     "${_extra_config[@]}" \
     ../${_realname}-${pkgver}
 
