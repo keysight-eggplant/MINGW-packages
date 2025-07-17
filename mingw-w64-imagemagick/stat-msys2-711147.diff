@@ -1,0 +1,22 @@
+diff --git a/MagickCore/utility-private.h b/MagickCore/utility-private.h
+index b3d951cd8..0f07ceb3e 100644
+--- a/MagickCore/utility-private.h
++++ b/MagickCore/utility-private.h
+@@ -307,7 +307,7 @@ static inline int set_file_timestamp(const char *path,struct stat *attributes)
+ 
+ #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+ #if defined(MAGICKCORE_HAVE_UTIMENSAT)
+-#if defined(__APPLE__) || defined(__NetBSD__) 
++#if defined(__APPLE__) || defined(__NetBSD__)
+ #define st_atim st_atimespec
+ #define st_ctim st_ctimespec
+ #define st_mtim st_mtimespec
+@@ -375,7 +375,7 @@ static inline int set_file_timestamp(const char *path,struct stat *attributes)
+ 
+ static inline int stat_utf8(const char *path,struct stat *attributes)
+ {
+-#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
++#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
+   return(stat(path,attributes));
+ #else
+    int
