@@ -34,15 +34,15 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-cc"
              "${MINGW_PACKAGE_PREFIX}-openexr"
              "${MINGW_PACKAGE_PREFIX}-pango")
 depends=("${MINGW_PACKAGE_PREFIX}-bzip2"
-         "${MINGW_PACKAGE_PREFIX}-djvulibre"
-         "${MINGW_PACKAGE_PREFIX}-flif"
-         "${MINGW_PACKAGE_PREFIX}-fftw"
+         $([[ "${enable_nogpl}" != true ]] && echo "${MINGW_PACKAGE_PREFIX}-djvulibre")
+         $([[ "${enable_nogpl}" != true ]] && echo "${MINGW_PACKAGE_PREFIX}-flif")
+         $([[ "${enable_nogpl}" != true ]] && echo "${MINGW_PACKAGE_PREFIX}-fftw")
          "${MINGW_PACKAGE_PREFIX}-fontconfig"
          "${MINGW_PACKAGE_PREFIX}-freetype"
          "${MINGW_PACKAGE_PREFIX}-glib2"
-         "${MINGW_PACKAGE_PREFIX}-gsfonts"
-         "${MINGW_PACKAGE_PREFIX}-jbigkit"
-         "${MINGW_PACKAGE_PREFIX}-lcms2"
+         $([[ "${enable_nogpl}" != true ]] && echo "${MINGW_PACKAGE_PREFIX}-gsfonts")
+         $([[ "${enable_nogpl}" != true ]] && echo "${MINGW_PACKAGE_PREFIX}-jbigkit")
+         $([[ "${enable_nogpl}" != true ]] && echo "${MINGW_PACKAGE_PREFIX}-lcms2")
          "${MINGW_PACKAGE_PREFIX}-libheif"
          "${MINGW_PACKAGE_PREFIX}-liblqr"
          "${MINGW_PACKAGE_PREFIX}-libpng"
@@ -52,7 +52,7 @@ depends=("${MINGW_PACKAGE_PREFIX}-bzip2"
          "${MINGW_PACKAGE_PREFIX}-libltdl"
          "${MINGW_PACKAGE_PREFIX}-libwebp"
          "${MINGW_PACKAGE_PREFIX}-libwinpthread"
-         "${MINGW_PACKAGE_PREFIX}-libwmf"
+         $([[ "${enable_nogpl}" != true ]] && echo "${MINGW_PACKAGE_PREFIX}-libwmf")
          "${MINGW_PACKAGE_PREFIX}-libxml2"
          "${MINGW_PACKAGE_PREFIX}-omp"
          "${MINGW_PACKAGE_PREFIX}-openjpeg2"
@@ -62,7 +62,7 @@ depends=("${MINGW_PACKAGE_PREFIX}-bzip2"
          "${MINGW_PACKAGE_PREFIX}-zlib"
          "${MINGW_PACKAGE_PREFIX}-zstd"
         )
-optdepends=("${MINGW_PACKAGE_PREFIX}-ghostscript: for Ghostscript support"
+optdepends=($([[ "${enable_nogpl}" != true ]] && echo "${MINGW_PACKAGE_PREFIX}-ghostscript: for Ghostscript support")
             "${MINGW_PACKAGE_PREFIX}-graphviz: for GVC support"
             "${MINGW_PACKAGE_PREFIX}-libjxl: for JPEG XL support"
             "${MINGW_PACKAGE_PREFIX}-librsvg: for SVG support"
@@ -124,13 +124,13 @@ build() {
     --disable-deprecated \
     --enable-legacy-support \
     --enable-hdri \
-    --with-djvu \
-    --with-fftw \
-    --with-gslib \
+    $([[ "${enable_nogpl}" != true ]] && echo --with-djvu || echo --without-djvu) \
+    $([[ "${enable_nogpl}" != true ]] && echo --with-fftw) \
+    $([[ "${enable_nogpl}" != true ]] && echo --with-gslib) \
     --with-gvc \
-    --with-flif \
+    $([[ "${enable_nogpl}" != true ]] && echo --with-flif) \
     --with-jxl \
-    --with-lcms \
+    $([[ "${enable_nogpl}" != true ]] && echo --with-lcms || echo --without-lcms) \
     --with-lqr \
     --with-modules \
     --with-openexr \
@@ -138,12 +138,12 @@ build() {
     --with-rsvg \
     --with-uhdr \
     --with-webp \
-    --with-wmf \
+    $([[ "${enable_nogpl}" != true ]] && echo --with-wmf || echo --without-wmf) \
     --with-xml \
     --without-autotrace \
     --without-dps \
     --without-fpx \
-    --with-jbig \
+    $([[ "${enable_nogpl}" != true ]] && echo --with-jbig || echo --without-jbig) \
     --without-perl \
     --without-x \
     --with-raqm \
