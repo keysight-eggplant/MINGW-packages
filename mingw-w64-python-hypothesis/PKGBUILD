@@ -3,7 +3,7 @@
 _realname=hypothesis
 pkgbase=mingw-w64-python-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-python-${_realname}")
-pkgver=6.139.2
+pkgver=6.140.3
 pkgrel=1
 pkgdesc="Advanced Quickcheck style testing library for Python (mingw-w64)"
 arch=('any')
@@ -15,6 +15,7 @@ msys2_documentation_url='https://hypothesis.readthedocs.io/'
 msys2_changelog_url='https://hypothesis.readthedocs.io/en/latest/changes.html'
 msys2_references=(
   'archlinux: python-hypothesis'
+  'cygwin: python-hypothesis'
   'gentoo: dev-python/hypothesis'
   'purl: pkg:pypi/hypothesis'
 )
@@ -33,7 +34,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-python-build"
 checkdepends=("${MINGW_PACKAGE_PREFIX}-python-pytest")
 options=('!strip')
 source=("https://pypi.org/packages/source/${_realname::1}/${_realname}/${_realname}-${pkgver}.tar.gz")
-sha256sums=('2dc2ff36ea977a9cb7fb68f24a5dbf5d673b88a2e502212676eafe09b699f511')
+sha256sums=('4f4a09bf77af21e0cc3dffed1ea639812dc75d38f81308ec9fb0e33f8557b0cb')
 
 build() {
   cp -r "${_realname}-${pkgver}" "python-build-${MSYSTEM}" && cd "python-build-${MSYSTEM}"

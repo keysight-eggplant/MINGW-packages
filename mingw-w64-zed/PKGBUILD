@@ -4,8 +4,9 @@ _realname=zed
 pkgbase=mingw-w64-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}"
          "${MINGW_PACKAGE_PREFIX}-${_realname}-docs")
-pkgver=0.204.4
-pkgrel=1
+_pkgver=0.208.3-pre
+pkgver=${_pkgver//-}
+pkgrel=2
 pkgdesc="A high-performance, multiplayer code editor (mingw-w64)"
 arch=('any')
 mingw_arch=('ucrt64' 'clang64' 'clangarm64')
@@ -41,25 +42,30 @@ optdepends=("${MINGW_PACKAGE_PREFIX}-clang-tools-extra: for a better C/C++ langu
             "${MINGW_PACKAGE_PREFIX}-rust-analyzer: for a better Rust language support"
             'git: for a better Git integration'
             'openssh: for a SSH remote')
-source=("git+${msys2_repository_url}.git#tag=v${pkgver}"
+source=("git+${msys2_repository_url}.git#tag=v${_pkgver}"
         "zstd-sys.tar.gz::https://crates.io/api/v1/crates/zstd-sys/2.0.15+zstd.1.5.7/download"
         "zstd-sys-remove-statik.patch"
         "zed-fix-docs-build.patch"
-        "zed-bump-cargo-about.patch")
-sha256sums=('095d6ea0da28f6766087ddff5d220129f19d9752edf7493c71e484dd922d2a3b'
+        "zed-wsl-set-proper-cli-name.patch"
+        "https://patch-diff.githubusercontent.com/raw/zed-industries/zed/pull/39810.patch")
+sha256sums=('3bea8727ecf9730e8d4bf687a0f7aae7d8acd0190b29f25ce1bf24eddaf4c3d5'
             'eb81183ddd97d0c74cedf1d50d85c8d08c1b8b68ee863bdee9e706eedba1a237'
             '48f4900ceb02d3aaf9a1020f33d56629156e96759f456c0e7ca18bfcf910767b'
             'acaf155e37120a1af8918854a457939cad71e59bca2ced866f89795ed6b0a7b2'
-            '6970aa7f737ca5418ea63922b1dc9fa855c9e92d172859423cad29b4f2ad7436')
+            'efc8fd5c8f5725678b7e4f726aa1414480de7aefac360c7b691ef179ae39c54f'
+            '77232451c74ae4853b1a28d324ff61aea557132ce164666457d5f2d5b45911f0')
 
 prepare() {
   cd "${_realname}"
   rm rust-toolchain.toml
 
-  patch -p1 -i ../zed-bump-cargo-about.patch
   patch -p1 -i ../zed-fix-docs-build.patch
+  # https://github.com/zed-industries/zed/pull/39810
+  patch -p1 -i ../39810.patch
   # link system deps dynamically
   patch -d ../zstd-sys-2.0.15+zstd.1.5.7 -i ../zstd-sys-remove-statik.patch
+  # wsl script is hardcoded with zed.exe name
+  patch -Np1 -i ../zed-wsl-set-proper-cli-name.patch
   # use patched *-sys crates
   sed -i '/\[patch\.crates-io\]/a zstd-sys = { path = "../zstd-sys-2.0.15+zstd.1.5.7" }' Cargo.toml
 
@@ -72,7 +78,7 @@ prepare() {
   cargo update -p zstd-sys
   cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
   # generate license for whole Zed contents
-  sh script/generate-licenses
+  #sh script/generate-licenses
 }
 
 build() {
@@ -89,7 +95,7 @@ build() {
   export ZED_UPDATE_EXPLANATION='Updates are handled by pacman'
   export CARGO_PROFILE_RELEASE_DEBUG=0
   export RELEASE_CHANNEL="stable"
-  export RELEASE_VERSION="${pkgver} (Rev${pkgrel}, Built by MSYS2 project)"
+  export RELEASE_VERSION="${_pkgver} (Rev${pkgrel}, Built by MSYS2 project)"
   # set path to our fxc compiler
   export GPUI_FXC_PATH="${MINGW_PREFIX}/bin/fxc.exe"
   # should be synced with .cargo/config.toml
@@ -111,7 +117,11 @@ check() {
 package_zed() {
   install -Dm755 "${_realname}/target/release/cli" "${pkgdir}${MINGW_PREFIX}/bin/zeditor"
   install -Dm755 "${_realname}/target/release/zed" "${pkgdir}${MINGW_PREFIX}/lib/zed/zed-editor"
-  install -Dm644 "${_realname}/assets/licenses.md" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/LICENSE.md"
+  # WSL script
+  install -Dm755 "${_realname}/crates/zed/resources/windows/zed.sh" "${pkgdir}${MINGW_PREFIX}/bin/zed-wsl"
+
+  install -Dm644 "${_realname}"/LICENSE-{AGPL,APACHE,GPL} -t "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/"
+  #install -Dm644 "${_realname}/assets/licenses.md" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/LICENSE.md"
 }
 
 package_zed-docs() {

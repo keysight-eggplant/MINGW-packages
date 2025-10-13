@@ -4,13 +4,19 @@
 _realname=ccache
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
-pkgver=4.11.3
+pkgver=4.12.1
 pkgrel=1
 pkgdesc="Compiler cache that speeds up recompilation by caching previous compilations (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw64' 'mingw32' 'ucrt64' 'clang64' 'clangarm64')
 url="https://ccache.dev/"
 msys2_repository_url="https://github.com/ccache/ccache"
+msys2_changelog_url="https://ccache.dev/releasenotes.html"
+msys2_references=(
+  'anitya: 257'
+  'archlinux: ccache'
+  'gentoo: dev-util/ccache'
+)
 license=("spdx:GPL-3.0-or-later")
 replaces=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
 makedepends=("${MINGW_PACKAGE_PREFIX}-cc"
@@ -25,9 +31,9 @@ depends=("${MINGW_PACKAGE_PREFIX}-cc-libs"
          $([[ ${CARCH} == i686 ]] || echo \
            "${MINGW_PACKAGE_PREFIX}-hiredis" \
            "${MINGW_PACKAGE_PREFIX}-libblake3"))
-source=("https://github.com/ccache/ccache/releases/download/v${pkgver}/${_realname}-${pkgver}.tar.xz"{,.asc})
-sha256sums=('d5a340e199977b7b1e89c0add794132c977fdc2ecc7ca5451e03d43627a1b1be'
-            'SKIP')
+source=("https://github.com/ccache/ccache/releases/download/v${pkgver}/${_realname}-${pkgver}.tar.xz"{,.minisig})
+sha256sums=('42e6c4b260cffd92dfa755e26390f45f5842e8c1a5f64f2b2e68adfbe82d1542'
+            'bda06a7172e0a9977bd046b3e5623b09c5c5de3028145a09d427af489b521d0b')
 validpgpkeys=('5A939A71A46792CF57866A51996DDA075594ADB8') # Joel Rosdahl <joel@rosdahl.net>
 
 build() {
