@@ -5,11 +5,16 @@ pkgbase=mingw-w64-python-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-python-${_realname}"
          "${MINGW_PACKAGE_PREFIX}-python-${_realname}-docs")
 pkgver=0.20250521.0
-pkgrel=1
+pkgrel=2
 pkgdesc='Pure Python library for PNG image encoding/decoding (mingw-w64)'
 arch=('any')
 mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')
 url='https://gitlab.com/drj11/pypng'
+msys2_references=(
+  'archlinux: python-pypng'
+  'gentoo: dev-python/pypng'
+  'purl: pkg:pypi/pypng'
+)
 license=('spdx:MIT')
 depends=("${MINGW_PACKAGE_PREFIX}-python")
 makedepends=("${MINGW_PACKAGE_PREFIX}-python-build"

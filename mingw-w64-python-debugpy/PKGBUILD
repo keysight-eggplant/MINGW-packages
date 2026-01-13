@@ -3,8 +3,8 @@
 _realname=debugpy
 pkgbase=mingw-w64-python-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-python-${_realname}")
-pkgver=1.8.17
-pkgrel=1
+pkgver=1.8.19
+pkgrel=2
 pkgdesc="An implementation of the Debug Adapter Protocol for Python (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')
@@ -21,7 +21,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-python-build"
 checkdepends=("${MINGW_PACKAGE_PREFIX}-python-pytest")
 options=('!strip')
 source=("https://pypi.org/packages/source/${_realname::1}/${_realname}/${_realname}-${pkgver}.tar.gz")
-sha256sums=('fd723b47a8c08892b1a16b2c6239a8b96637c62a59b94bb5dab4bac592a58a8e')
+sha256sums=('eea7e5987445ab0b5ed258093722d5ecb8bb72217c5c9b1e21f64efe23ddebdb')
 
 build() {
   cp -r "${_realname}-${pkgver}" "python-build-${MSYSTEM}" && cd "python-build-${MSYSTEM}"

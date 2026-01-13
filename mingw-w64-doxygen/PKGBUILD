@@ -3,7 +3,7 @@
 _realname=doxygen
 pkgbase=mingw-w64-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
-pkgver=1.14.0
+pkgver=1.16.1
 pkgrel=1
 pkgdesc="A documentation system for C++, C, Java, IDL and PHP (mingw-w64)"
 arch=('any')
@@ -30,18 +30,18 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-cc"
              $([[ ${CARCH} == i686 ]] || echo \
                "${MINGW_PACKAGE_PREFIX}-clang-tools-extra" \
                "${MINGW_PACKAGE_PREFIX}-llvm" \
-               "${MINGW_PACKAGE_PREFIX}-qt6-base"))
+               "${MINGW_PACKAGE_PREFIX}-qt6-svg"))
 if [[ ${CARCH} != i686 ]]; then
-  optdepends=("${MINGW_PACKAGE_PREFIX}-qt6-base: for doxywizard")
+  optdepends=("${MINGW_PACKAGE_PREFIX}-qt6-svg: for doxywizard")
 fi
 source=(https://www.doxygen.nl/files/${_realname}-${pkgver}.src.tar.gz
         cmake-mingw.patch
         0002-clang-19-fix.patch
-        0003-fix-building-with-gcc.patch)
-sha256sums=('d4536d11ab13037327d8d026b75f5a86b7ccb2093e2f546235faf61fd86e6b5d'
-            'c7406ee2571ad4e08aa1c58cbb675d531ae0d849743877cebd3d900f84e83e23'
+        0003-enable-lto-with-clang.patch)
+sha256sums=('201ce33b514ea87cc1697c0dcf829692c2695c1812683a9cc622194b05e263a8'
+            '24f669b833c1e075d951774db2df4e9db6e61ea4cb7fa5cf666370ab420a94a5'
             'cfe1218b5897ad9ec88dab6dd86f592f941feac464646df619bb8ccb90bbdc4e'
-            '0efe17145002fc2abd349e051762faf45c89a2db8e8eb83f99660942a9116319')
+            '7ec2711f7da6ec0d1d0610f1efbc0eb38eaee8b0f0ffee660507fed5147bdb67')
 
 apply_patch_with_msg() {
   for _patch in "$@"
@@ -56,7 +56,7 @@ prepare() {
 
   apply_patch_with_msg \
     cmake-mingw.patch \
-    0003-fix-building-with-gcc.patch
+    0003-enable-lto-with-clang.patch
 
   # llvm 19 fixes
   # https://github.com/doxygen/doxygen/issues/10928
@@ -65,8 +65,6 @@ prepare() {
 }
 
 build() {
-  mkdir -p build-${MSYSTEM} && cd build-${MSYSTEM}
-
   declare -a _extra_config
   if check_option "debug" "n"; then
     _extra_config+=("-DCMAKE_BUILD_TYPE=Release")
@@ -92,14 +90,14 @@ build() {
     -Duse_sys_sqlite3=ON \
     -Dforce_qt="Qt6" \
     -DPython_EXECUTABLE=${MINGW_PREFIX}/bin/python \
-    ../${_realname}-${pkgver}
+    -S ${_realname}-${pkgver} \
+    -B build-${MSYSTEM}
 
-  ${MINGW_PREFIX}/bin/cmake --build .
+  ${MINGW_PREFIX}/bin/cmake --build build-${MSYSTEM}
 }
 
 package() {
-  cd "${srcdir}"/build-${MSYSTEM}
-  DESTDIR="${pkgdir}" ${MINGW_PREFIX}/bin/cmake --install .
+  DESTDIR="${pkgdir}" ${MINGW_PREFIX}/bin/cmake --install build-${MSYSTEM}
 
   install -Dm644 "${srcdir}"/${_realname}-${pkgver}/LICENSE \
     "${pkgdir}"${MINGW_PREFIX}/share/licenses/${_realname}/LICENSE

@@ -3,7 +3,7 @@
 _realname=hypothesis
 pkgbase=mingw-w64-python-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-python-${_realname}")
-pkgver=6.140.3
+pkgver=6.150.0
 pkgrel=1
 pkgdesc="Advanced Quickcheck style testing library for Python (mingw-w64)"
 arch=('any')
@@ -34,7 +34,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-python-build"
 checkdepends=("${MINGW_PACKAGE_PREFIX}-python-pytest")
 options=('!strip')
 source=("https://pypi.org/packages/source/${_realname::1}/${_realname}/${_realname}-${pkgver}.tar.gz")
-sha256sums=('4f4a09bf77af21e0cc3dffed1ea639812dc75d38f81308ec9fb0e33f8557b0cb')
+sha256sums=('ac263bdaf338f4899a9a56e8224304e29b3ad91799e0274783c49abd91ea35ac')
 
 build() {
   cp -r "${_realname}-${pkgver}" "python-build-${MSYSTEM}" && cd "python-build-${MSYSTEM}"

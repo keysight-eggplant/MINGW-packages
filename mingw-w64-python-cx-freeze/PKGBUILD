@@ -1,4 +1,4 @@
-# Maintainer: Marcelo Duarte https://github.com/marcelotduarte
+# Maintainer: Marcelo Duarte @marcelotduarte
 # Maintainer: Frode Solheim <frode@fs-uae.net>
 # Contributor: Duong Pham <dthpham@gmail.com>
 # Contributor: Lara Maia <dev@lara.click>
@@ -6,8 +6,8 @@
 _realname=cx-freeze
 pkgbase=mingw-w64-python-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-python-${_realname}")
-pkgver=8.4.1
-pkgrel=1
+pkgver=8.5.3
+pkgrel=3
 pkgdesc="Creates standalone executables from Python scripts with the same performance as the original script (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')
@@ -18,22 +18,21 @@ msys2_references=(
 license=('spdx:PSF-2.0')
 depends=(
   "${MINGW_PACKAGE_PREFIX}-python"
-  "${MINGW_PACKAGE_PREFIX}-python-filelock"
   "${MINGW_PACKAGE_PREFIX}-python-packaging"
-  "${MINGW_PACKAGE_PREFIX}-python-pip"
   "${MINGW_PACKAGE_PREFIX}-python-setuptools"
-  "${MINGW_PACKAGE_PREFIX}-python-cx-logging"
   "${MINGW_PACKAGE_PREFIX}-python-lief"
-  "${MINGW_PACKAGE_PREFIX}-python-cabarchive"
-  "${MINGW_PACKAGE_PREFIX}-python-striprtf"
+  "${MINGW_PACKAGE_PREFIX}-python-freeze-core"
+  "${MINGW_PACKAGE_PREFIX}-python-msilib"
 )
 makedepends=(
   "${MINGW_PACKAGE_PREFIX}-python-build"
   "${MINGW_PACKAGE_PREFIX}-python-installer"
-  "${MINGW_PACKAGE_PREFIX}-cc"
-  "${MINGW_PACKAGE_PREFIX}-tools"
+)
+optdepends=(
+  "${MINGW_PACKAGE_PREFIX}-python-cx-logging"
 )
 checkdepends=(
+  "${MINGW_PACKAGE_PREFIX}-python-pip"
   "${MINGW_PACKAGE_PREFIX}-python-coverage"
   "${MINGW_PACKAGE_PREFIX}-python-pytest"
   "${MINGW_PACKAGE_PREFIX}-python-pytest-mock"
@@ -45,7 +44,9 @@ source=(
   "https://pypi.org/packages/source/${_realname::1}/${_realname/-/_}/${_realname/-/_}-${pkgver}.tar.gz"
   #"${url}/archive/${pkgver}/${_realname}-${pkgver}.tar.gz"
 )
-sha256sums=('d36e804d393aea1b4ad28cff0d8b8a562cc25ea462f06bcf6b265edbc02eecfb')
+sha256sums=(
+  "772e41ada72467365342d521f42f124663db51882f6ba495bf88dec399dc6511"
+)
 
 prepare() {
   cd cx_freeze-${pkgver}

@@ -8,13 +8,16 @@ pkgver=${_pkgver}
 pkgrel=2
 pkgdesc="GNU Image Manipulation Program (mingw-w64)"
 arch=('any')
-mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
+mingw_arch=('mingw32' 'ucrt64' 'clang64' 'clangarm64')
 url="https://www.gimp.org/downloads/devel/"
 msys2_repository_url="https://gitlab.gnome.org/GNOME/gimp"
 msys2_references=(
   'archlinux: gimp'
   'aur: gimp-devel'
   "cpe: cpe:/a:gimp:gimp"
+)
+msys2_ignore_vulnerabilities=(
+  'CVE-2025-8672' # macOS-specific
 )
 license=('spdx:GPL-3.0-or-later AND LGPL-3.0-or-later')
 provides=("${MINGW_PACKAGE_PREFIX}-gimp3")

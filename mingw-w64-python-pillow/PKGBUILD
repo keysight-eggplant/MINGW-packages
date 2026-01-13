@@ -3,8 +3,8 @@
 _realname=pillow
 pkgbase=mingw-w64-python-pillow
 pkgname=("${MINGW_PACKAGE_PREFIX}-python-pillow")
-pkgver=11.3.0
-pkgrel=1
+pkgver=12.1.0
+pkgrel=2
 pkgdesc="Python Imaging Library (PIL) fork Python3 version (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')
@@ -27,20 +27,24 @@ depends=("${MINGW_PACKAGE_PREFIX}-freetype"
 makedepends=("${MINGW_PACKAGE_PREFIX}-python-build"
              "${MINGW_PACKAGE_PREFIX}-python-installer"
              "${MINGW_PACKAGE_PREFIX}-python-setuptools"
+             "${MINGW_PACKAGE_PREFIX}-pybind11"
              "${MINGW_PACKAGE_PREFIX}-cc"
              "${MINGW_PACKAGE_PREFIX}-tk")
 optdepends=("${MINGW_PACKAGE_PREFIX}-tk: for the ImageTK module")
 source=("https://pypi.org/packages/source/${_realname::1}/${_realname}/${_realname}-${pkgver}.tar.gz")
-sha256sums=('3828ee7586cd0b2091b6209e5ad53e20d0649bbe87164a459d0676e035e8f523')
+sha256sums=('5c5ae0a06e9ea030ab786b0251b32c7e4ce10e58d983c0d5c56029455180b5b9')
 
 prepare() {
   rm -rf "python-build-${MSYSTEM}" | true
   cp -r "${_realname}-${pkgver}" "python-build-${MSYSTEM}"
+  cd "python-build-${MSYSTEM}"
 }
 
 build() {
   cd "${srcdir}/python-build-${MSYSTEM}"
 
+  # https://github.com/msys2-contrib/cpython-mingw/issues/200
+  AR="ar" \
   ${MINGW_PREFIX}/bin/python -m build --wheel --skip-dependency-check --no-isolation
 }
 

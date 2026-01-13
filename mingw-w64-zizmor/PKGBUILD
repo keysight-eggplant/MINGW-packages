@@ -3,7 +3,7 @@
 _realname=zizmor
 pkgbase=mingw-w64-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
-pkgver=1.14.2
+pkgver=1.20.0
 pkgrel=1
 pkgdesc="A static analysis tool for GitHub Actions (mingw-w64)"
 url='https://github.com/zizmorcore/zizmor'
@@ -17,35 +17,36 @@ msys2_references=(
 arch=('any')
 mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')
 license=('spdx:MIT')
-depends=(
-  "${MINGW_PACKAGE_PREFIX}-cc-libs"
-)
-makedepends=(
-  "${MINGW_PACKAGE_PREFIX}-cc"
-  "${MINGW_PACKAGE_PREFIX}-rust"
-)
+makedepends=("${MINGW_PACKAGE_PREFIX}-rust")
 source=("https://github.com/zizmorcore/${_realname}/archive/v${pkgver}/${_realname}-${pkgver}.tar.gz")
-sha256sums=('c2b0d5edcb3a008b62412522740885bd75164cb4239bb2acd4007acaad60815a')
+sha256sums=('57cd9d7f0dbb88646adb07fbe4f76815c1070eece5aa7924ec74a688a6da31ad')
 
 prepare() {
   cd "${_realname}-${pkgver}"
-  cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+
+  cargo fetch --locked --target "${RUST_CHOST}"
 }
 
 build() {
   cd "${_realname}-${pkgver}"
-  cargo build --frozen --release
+
+  cargo build --frozen --release -p zizmor
 }
 
 check() {
   cd "${_realname}-${pkgver}"
-  cargo test --frozen
+
+  cargo test --frozen --release -p zizmor
 }
 
 package() {
   cd "${_realname}-${pkgver}"
-  install -Dm 755 -t "${pkgdir}${MINGW_PREFIX}/bin" \
-    target/release/zizmor.exe
 
-  install -Dm 644 LICENSE -t "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}"
+  install -Dm755 -t "${pkgdir}${MINGW_PREFIX}/bin" target/release/zizmor.exe
+
+  local _complete="target/release/zizmor --completions"
+  install -Dm644 <($_complete bash) "${pkgdir}${MINGW_PREFIX}/share/bash-completion/completions/${_realname}"
+  install -Dm644 <($_complete fish) "${pkgdir}${MINGW_PREFIX}/share/fish/vendor_completions.d/${_realname}.fish"
+  install -Dm644 <($_complete zsh) "${pkgdir}${MINGW_PREFIX}/share/zsh/site-functions/_${_realname}"
+  install -Dm644 LICENSE -t "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}"
 }
