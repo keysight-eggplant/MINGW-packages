@@ -3,8 +3,8 @@
 _realname=scikit-learn
 pkgbase=mingw-w64-python-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-python-${_realname}")
-pkgver=1.7.1
-pkgrel=1
+pkgver=1.8.0
+pkgrel=3
 pkgdesc="A set of python modules for machine learning and data mining (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')
@@ -24,7 +24,6 @@ depends=("${MINGW_PACKAGE_PREFIX}-python"
          "${MINGW_PACKAGE_PREFIX}-omp")
 makedepends=("${MINGW_PACKAGE_PREFIX}-python-build"
              "${MINGW_PACKAGE_PREFIX}-python-installer"
-             "${MINGW_PACKAGE_PREFIX}-python-setuptools"
              "${MINGW_PACKAGE_PREFIX}-meson-python"
              "${MINGW_PACKAGE_PREFIX}-ninja"
              "${MINGW_PACKAGE_PREFIX}-pkgconf"
@@ -32,8 +31,8 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-python-build"
              "${MINGW_PACKAGE_PREFIX}-cc")
 source=("https://pypi.org/packages/source/${_realname::1}/${_realname}/${_realname/-/_}-${pkgver}.tar.gz"
         001-remove-extra-flags.patch)
-sha256sums=('24b3f1e976a4665aa74ee0fcaac2b8fccc6ae77c8e07ab25da3ba6d3292b9802'
-            '95f33e2b5c1145b0bf5689904af0ab5bd7953c650266691c9b32c2cd09e8589c')
+sha256sums=('9bccbb3b40e3de10351f8f5068e105d0f4083b1a65fa07b6634fbc401a6287fd'
+            'bc1dd1784447b20beb53de471ee1347a4ae4d423f073d1ab4554c923264c8be1')
 
 apply_patch_with_msg() {
   for _patch in "$@"

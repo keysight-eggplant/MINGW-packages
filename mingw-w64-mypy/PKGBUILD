@@ -3,8 +3,8 @@
 _realname=mypy
 pkgbase=mingw-w64-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
-pkgver=1.18.2
-pkgrel=1
+pkgver=1.19.1
+pkgrel=3
 pkgdesc="Optional static typing for Python 3 (PEP484) (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')
@@ -21,6 +21,7 @@ depends=(
   "${MINGW_PACKAGE_PREFIX}-python-mypy_extensions"
   "${MINGW_PACKAGE_PREFIX}-python-pathspec"
   "${MINGW_PACKAGE_PREFIX}-python-typing_extensions"
+  "${MINGW_PACKAGE_PREFIX}-python-librt"
 )
 makedepends=("${MINGW_PACKAGE_PREFIX}-python-build"
              "${MINGW_PACKAGE_PREFIX}-python-installer"
@@ -28,7 +29,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-python-build"
              "${MINGW_PACKAGE_PREFIX}-cc")
 options=(!strip)
 source=("https://pypi.org/packages/source/${_realname::1}/${_realname}/${_realname}-${pkgver}.tar.gz")
-sha256sums=('06a398102a5f203d7477b2923dda3634c36727fa5c237d8f859ef90c42a9924b')
+sha256sums=('19d88bb05303fe63f71dd2c6270daca27cb9401c4ca8255fe50d1d920e0eb9ba')
 
 build() {
   rm -rf "python-build-${MSYSTEM}"

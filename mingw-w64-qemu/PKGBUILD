@@ -6,12 +6,12 @@ pkgname=(
   "${MINGW_PACKAGE_PREFIX}-qemu-guest-agent"
   "${MINGW_PACKAGE_PREFIX}-qemu-image-util"
 )
-_base_ver="10.1.1"
+_base_ver="10.2.0"
 # QEMU Versioning of RC-SourcePackage and RC-Version differs
 # e.g. qemu-6.1.0-rc0.tar.xz contains 6.0.90, qemu-6.1.0-rc1.tar.xz contains 6.0.91
 # Unset _rc_no to create Release-Build
 #_rc_no="4"
-_rc_base_ver="10.0.9${_rc_no}"
+_rc_base_ver="10.1.9${_rc_no}"
 _rc_file_ver="rc${_rc_no}"
 _tarname=$( [ -z "${_rc_no}" ] && echo ${_realname}-${_base_ver} || echo ${_realname}-${_base_ver}-${_rc_file_ver} )
 pkgver=$( [ -z "${_rc_no}" ] && echo ${_base_ver} || echo ${_rc_base_ver} )
@@ -34,7 +34,7 @@ makedepends=(
   "${MINGW_PACKAGE_PREFIX}-python"
   "${MINGW_PACKAGE_PREFIX}-python-sphinx"
   "${MINGW_PACKAGE_PREFIX}-python-sphinx_rtd_theme"
-  "${MINGW_PACKAGE_PREFIX}-tools-git")
+  "${MINGW_PACKAGE_PREFIX}-tools")
 case ${MSYSTEM} in
   CLANG*)
     # work around lack of windmc in llvm
@@ -112,13 +112,17 @@ source=(
   msys2.readme.txt
   msys2.qemu-guest-agent.txt
   msys2.examples.tests.sh
+  ConvertStringToBSTR.patch
+  qemu_ftruncate64.patch
 )
 sha256sums=(
-  'e56b93d95953a9b6a64d1985dbcedfb07dc54d92c50b7912526693536c589923'
+  '9e30ad1b8b9f7b4463001582d1ab297f39cfccea5d08540c0ca6d6672785883a'
   'SKIP'
   '51625fd83c0a63729942d3dfc6d48be3491a700fe0f7cb8e88935b46081c9016'
   'f2f9eeb31023d002f54637a9941ea0d8fae3c6f0a66c05c033857b305bd1470d'
   'a2db7f1d696a8609df54f48f20760ef100b04b39d2bce1ca0a7989375afab8a1'
+  'bff14c00c77983cef1dbab04bc1b51ea228075106572e6b4e10a15bed3323a08'
+  '69cbe6ac03719b90d82d7dbb9f993a5b27782399e15f28b140cbd7cf8af8e956'
 )
 validpgpkeys=('CEACC9E15534EBABB82D3FA03353C9CEF108B584') # Michael Roth <flukshun@gmail.com>
 # tar cannot create links, to keep build running, manual extraction is required
@@ -138,7 +142,8 @@ prepare() {
   tar -xf "${srcdir}"/${_tarname}.tar.xz -C "${srcdir}" || true
 
   cd "${srcdir}"/${_tarname}
-  # apply_patch_with_msg
+  apply_patch_with_msg ConvertStringToBSTR.patch
+  apply_patch_with_msg qemu_ftruncate64.patch
 }
 
 build() {

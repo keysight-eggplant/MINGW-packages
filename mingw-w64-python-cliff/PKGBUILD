@@ -3,8 +3,8 @@
 _realname=cliff
 pkgbase=mingw-w64-python-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-python-${_realname}")
-pkgver=4.11.0
-pkgrel=1
+pkgver=4.13.1
+pkgrel=2
 pkgdesc="Command Line Interface Formulation Framework (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')
@@ -33,7 +33,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-python-build"
 #              "${MINGW_PACKAGE_PREFIX}-python-oslosphinx"
 #              "${MINGW_PACKAGE_PREFIX}-python-testscenarios")
 source=("https://pypi.org/packages/source/${_realname::1}/${_realname}/${_realname}-${pkgver}.tar.gz")
-sha256sums=('aa33c11ac2fecdf2d1eaffea9d5d0eb4584b8e777673bb55d42a693e34ccc429')
+sha256sums=('b79cc0b2c19f6c6e78c82bd923e06785035d77cb0d2a1a483229f0a2836f0ca7')
 
 prepare() {
   rm -rf python-build-${MSYSTEM} | true

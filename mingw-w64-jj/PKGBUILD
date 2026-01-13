@@ -5,13 +5,13 @@ _realname=jj
 pkgbase=mingw-w64-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}"
          "${MINGW_PACKAGE_PREFIX}-${_realname}-docs")
-pkgver=0.34.0
+pkgver=0.37.0
 pkgrel=1
 pkgdesc="Jujutsu (an experimental VCS) (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')
 url="https://github.com/jj-vcs/jj"
-msys2_documentation_url="https://jj-vcs.github.io/jj/latest"
+msys2_documentation_url="https://docs.jj-vcs.dev/latest/"
 msys2_changelog_url='https://github.com/jj-vcs/jj/blob/main/CHANGELOG.md'
 msys2_references=(
   'anitya: 376676'
@@ -23,12 +23,12 @@ license=('spdx:Apache-2.0')
 makedepends=("${MINGW_PACKAGE_PREFIX}-rust"
              'git')
 source=("git+${url}.git#tag=v${pkgver}")
-sha256sums=('3d533e489b9c78a24c870ee5c86c715cea1023af3a500bf3fe4f393a254920a6')
+sha256sums=('8886edb8b9d58f3660018204d9b0e3b1b1874ab4fcaa0b1e2816745537c9f1a2')
 
 prepare() {
   cd "${_realname}"
 
-  cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+  cargo fetch --locked --target "${RUST_CHOST}"
 }
 
 build() {
